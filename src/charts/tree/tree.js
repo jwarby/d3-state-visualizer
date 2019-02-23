@@ -54,7 +54,8 @@ const defaultOptions = {
       left: 0,
       top: 0
     },
-    style: undefined
+    style: undefined,
+    getText: () => undefined
   }
 }
 
@@ -231,7 +232,15 @@ export default function(DOMNode, options = {}) {
 
       if (!tooltipOptions.disabled) {
         nodeEnter.call(d3tooltip(d3, 'tooltip', {...tooltipOptions, root})
-          .text((d, i) => getTooltipString(d, i, tooltipOptions))
+          .text((d, i) => {
+            const customText = tooltipOptions.getText(d, i, tooltipOptions)
+
+            if (customText === undefined) {
+              return getTooltipString(d, i, tooltipOptions)
+            }
+
+            return customText
+          })
           .style(tooltipOptions.style)
         )
       }
